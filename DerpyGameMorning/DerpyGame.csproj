@@ -41,6 +41,7 @@
     <Compile Include="Controller\Steampunk.cs" />
     <Compile Include="Controller\Program.cs" />
     <Compile Include="Model\Player.cs" />
+    <Compile Include="View\Animation.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.manifest" />
