@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<SourceFileCollection xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <Profile>Reach</Profile>
+  <Platform>DesktopGL</Platform>
+  <Config />
+  <SourceFiles>
+    <File>/Users/nwhi5696/Documents/GameDev/DerpyGameMorning/DerpyGameMorning/Content/Texture/mainMenu.png</File>
+    <File>/Users/nwhi5696/Documents/GameDev/DerpyGameMorning/DerpyGameMorning/Content/Texture/mine.png</File>
+    <File>/Users/nwhi5696/Documents/GameDev/DerpyGameMorning/DerpyGameMorning/Content/Texture/player.png</File>
+    <File>/Users/nwhi5696/Documents/GameDev/DerpyGameMorning/DerpyGameMorning/Content/Texture/bgLayer1.png</File>
+    <File>/Users/nwhi5696/Documents/GameDev/DerpyGameMorning/DerpyGameMorning/Content/Texture/bgLayer2.png</File>
+    <File>/Users/nwhi5696/Documents/GameDev/DerpyGameMorning/DerpyGameMorning/Content/Texture/endMenu.png</File>
+    <File>/Users/nwhi5696/Documents/GameDev/DerpyGameMorning/DerpyGameMorning/Content/Texture/laser.png</File>
+    <File>/Users/nwhi5696/Documents/GameDev/DerpyGameMorning/DerpyGameMorning/Content/Texture/mainbackground.png</File>
+    <File>/Users/nwhi5696/Documents/GameDev/DerpyGameMorning/DerpyGameMorning/Content/Animation/explosion.png</File>
+    <File>/Users/nwhi5696/Documents/GameDev/DerpyGameMorning/DerpyGameMorning/Content/Animation/mineAnimation.png</File>
+    <File>/Users/nwhi5696/Documents/GameDev/DerpyGameMorning/DerpyGameMorning/Content/Animation/shipAnimation.png</File>
+    <File>/Users/nwhi5696/Documents/GameDev/DerpyGameMorning/DerpyGameMorning/Content/Sound/explosion.wav</File>
+    <File>/Users/nwhi5696/Documents/GameDev/DerpyGameMorning/DerpyGameMorning/Content/Sound/gameMusic.mp3</File>
+    <File>/Users/nwhi5696/Documents/GameDev/DerpyGameMorning/DerpyGameMorning/Content/Sound/laserFire.wav</File>
+    <File>/Users/nwhi5696/Documents/GameDev/DerpyGameMorning/DerpyGameMorning/Content/Sound/menuMusic.mp3</File>
+    <File>/Users/nwhi5696/Documents/GameDev/DerpyGameMorning/DerpyGameMorning/Content/Font/gameFont.spritefont</File>
+  </SourceFiles>
+</SourceFileCollection>
