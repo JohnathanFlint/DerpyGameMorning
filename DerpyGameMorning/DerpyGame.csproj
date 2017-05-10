@@ -42,6 +42,10 @@
     <Compile Include="Controller\Program.cs" />
     <Compile Include="Model\Player.cs" />
     <Compile Include="View\Animation.cs" />
+    <Compile Include="View\Background.cs" />
+    <Compile Include="Model\Enemy.cs" />
+    <Compile Include="Model\Projectile.cs" />
+    <Compile Include="Model\Chicken.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.manifest" />

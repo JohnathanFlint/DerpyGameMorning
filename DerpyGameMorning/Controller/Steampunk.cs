@@ -5,6 +5,8 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using DerpyGame.Model;
 using DerpyGame.View;
+using System.Collections.Generic;
+using System.Threading;
 
 namespace DerpyGame.Controller
 {
@@ -29,6 +31,42 @@ namespace DerpyGame.Controller
 		// A movement speed for the player
 		private float playerMoveSpeed;
 
+		// Image used to display the static background
+		Texture2D mainBackground;
+
+		// Parallaxing Layers
+		Background bgLayer1;
+		Background bgLayer2;
+
+		// Enemies
+		Texture2D enemyTexture;
+		List<Enemy> enemies;
+		Texture2D chickenTexture;
+		List<Chicken> chickens;
+
+		// The rate at which the enemies appear
+		TimeSpan enemySpawnTime;
+		TimeSpan chickenSpawnTime;
+		TimeSpan previousSpawnTime;
+
+		// A random number generator
+		Random random;
+
+		Texture2D projectileTexture;
+		List<Projectile> projectiles;
+
+		// The rate of fire of the player laser
+		TimeSpan fireTime;
+		TimeSpan previousFireTime;
+
+		Texture2D explosionTexture;
+		List<Animation> explosions;
+
+		//Number that holds the player score
+		int score;
+		// The font used to display UI elements
+		SpriteFont font;
+
 		#endregion
 
 		public Steampunk()
@@ -51,7 +89,34 @@ namespace DerpyGame.Controller
 			player = new Player();
 
 			// Set a constant player move speed
-			playerMoveSpeed = 8.0f;
+			playerMoveSpeed = 50.0f;
+
+			bgLayer1 = new Background();
+			bgLayer2 = new Background();
+
+			// Initialize the enemies list
+			enemies = new List<Enemy>();
+			chickens = new List<Chicken>();
+
+			// Set the time keepers to zero
+			previousSpawnTime = TimeSpan.Zero;
+
+			// Used to determine how fast enemy respawns
+			enemySpawnTime = TimeSpan.FromSeconds(.5f);
+			chickenSpawnTime = TimeSpan.FromSeconds(.05f);
+
+			// Initialize our random number generator
+			random = new Random();
+
+			projectiles = new List<Projectile>();
+
+			// Set the laser to fire every quarter second
+			fireTime = TimeSpan.FromSeconds(.01f);
+
+			explosions = new List<Animation>();
+
+			//Set player's score to zero
+			score = 0;
 
 			base.Initialize();
 		}
@@ -74,7 +139,16 @@ namespace DerpyGame.Controller
 			+ GraphicsDevice.Viewport.TitleSafeArea.Height / 2);
 			player.Initialize(playerAnimation, playerPosition);
 
-			//TODO: use this.Content to load your game content here 
+			bgLayer1.Initialize(Content, "Texture/bgLayer1", GraphicsDevice.Viewport.Width, -1);
+			bgLayer2.Initialize(Content, "Texture/bgLayer2", GraphicsDevice.Viewport.Width, -2);
+			enemyTexture = Content.Load<Texture2D>("Animation/mineAnimation");
+			chickenTexture = Content.Load<Texture2D>("Animation/cuccoFly");
+			projectileTexture = Content.Load<Texture2D>("Texture/laser");
+			mainBackground = Content.Load<Texture2D>("Texture/mainbackground");
+			explosionTexture = Content.Load<Texture2D>("Animation/explosion");
+
+			// Load the score font
+			font = Content.Load<SpriteFont>("Font/gameFont");
 		}
 
 		/// <summary>
@@ -90,6 +164,7 @@ namespace DerpyGame.Controller
 			if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
 				Exit();
 #endif
+			//threads(gameTime);
 
 			// Save the previous state of the keyboard and game pad so we can determinesingle key/button presses
 			previousGamePadState = currentGamePadState;
@@ -103,8 +178,41 @@ namespace DerpyGame.Controller
 			//Update the player
 			UpdatePlayer(gameTime);
 
+			// Update the parallaxing background
+			bgLayer1.Update();
+			bgLayer2.Update();
+
+			// Update the enemies
+			UpdateEnemies(gameTime);
+			UpdateChickens(gameTime);
+
+			// Update the collision
+			UpdateCollision();
+
+			// Update the projectiles
+			UpdateProjectiles();
+
+			// Update the explosions
+			UpdateExplosions(gameTime);
+
 			base.Update(gameTime);
 		}
+
+		//private void threads()
+		//{
+		//	Steampunk bulletThread = new Steampunk();
+
+		//		Thread threadForBullets = new Thread(new ThreadStart(UpdateProjectiles));
+
+		//	threadForBullets.Start();
+
+		//	while (!threadForBullets.IsAlive)
+		//	{
+		//		Thread.Sleep(1);
+		//		threadForBullets.Abort();
+		//		threadForBullets.Join();
+		//	}
+		//}
 
 		private void UpdatePlayer(GameTime gameTime)
 		{
@@ -139,6 +247,327 @@ namespace DerpyGame.Controller
 			// Make sure that the player does not go out of bounds
 			player.Position.X = MathHelper.Clamp(player.Position.X, 0, GraphicsDevice.Viewport.Width - player.Width);
 			player.Position.Y = MathHelper.Clamp(player.Position.Y, 0, GraphicsDevice.Viewport.Height - player.Height);
+
+			// Fire only every interval we set as the fireTime
+			if (gameTime.TotalGameTime - previousFireTime > fireTime)
+			{
+				// Reset our current time
+				previousFireTime = gameTime.TotalGameTime;
+
+					AddProjectile(player.Position + new Vector2(player.Width / 2, 20));
+
+					AddProjectile(player.Position + new Vector2(player.Width / 2, -20));
+
+					AddProjectile(player.Position + new Vector2(player.Width / 2, 0));
+					AddProjectile(player.Position + new Vector2(player.Width / 2, 0));
+
+					AddProjectile(player.Position + new Vector2(player.Width / 2, 0));
+					AddProjectile(player.Position + new Vector2(player.Width / 2, 0));
+
+					AddProjectile(player.Position + new Vector2(player.Height / 2, 0));
+
+					AddProjectile(player.Position + new Vector2(player.Width / 2, 0));
+
+					AddProjectile(player.Position + new Vector2(-100, 0));
+
+					AddProjectile(player.Position + new Vector2(-100, 500));
+
+					AddProjectile(player.Position + new Vector2(-100, -500));
+
+					AddProjectile(player.Position + new Vector2(player.Width / 2, 20));
+
+					AddProjectile(player.Position + new Vector2(player.Width / 2, -20));
+
+					AddProjectile(player.Position + new Vector2(player.Width / 2, 0));
+					AddProjectile(player.Position + new Vector2(player.Width / 2, 0));
+
+					AddProjectile(player.Position + new Vector2(player.Width / 2, 0));
+					AddProjectile(player.Position + new Vector2(player.Width / 2, 0));
+
+					AddProjectile(player.Position + new Vector2(player.Height / 2, 0));
+
+					AddProjectile(player.Position + new Vector2(player.Width / 2, 0));
+
+					AddProjectile(player.Position + new Vector2(-500, 0));
+
+					AddProjectile(player.Position + new Vector2(-500, 500));
+
+					AddProjectile(player.Position + new Vector2(-500, -500));
+			}
+
+			// reset score if player health goes to zero
+			if (player.Health <= 0)
+			{
+				player.Health = 100;
+				score = 0;
+			}
+		}
+
+		private void AddEnemy()
+		{
+			// Create the animation object
+			Animation enemyAnimation = new Animation();
+
+			// Initialize the animation with the correct animation information
+			enemyAnimation.Initialize(enemyTexture, Vector2.Zero, 47, 61, 8, 30, Color.White, 1f, true);
+
+			// Randomly generate the position of the enemy
+			Vector2 position = new Vector2(GraphicsDevice.Viewport.Width + enemyTexture.Width / 2, random.Next(100, GraphicsDevice.Viewport.Height - 100));
+
+			// Create an enemy
+			Enemy enemy = new Enemy();
+
+			// Initialize the enemy
+			enemy.Initialize(enemyAnimation, position);
+
+			// Add the enemy to the active enemies list
+			enemies.Add(enemy);
+		}
+
+		private void AddChickens()
+		{
+			// Create the animation object
+			Animation chickenAnimation = new Animation();
+
+			// Initialize the animation with the correct animation information
+			chickenAnimation.Initialize(chickenTexture, Vector2.Zero, chickenTexture.Width/2, chickenTexture.Height, 2, 50, Color.White, 2f, true);
+
+			// Randomly generate the position of the enemy
+			Vector2 position = new Vector2(GraphicsDevice.Viewport.Width + chickenTexture.Width / 2, random.Next(100, GraphicsDevice.Viewport.Height - 100));
+
+			// Create an enemy
+			Chicken chicken = new Chicken();
+
+			// Initialize the enemy
+			chicken.Initialize(chickenAnimation, position);
+
+			// Add the enemy to the active enemies list
+			chickens.Add(chicken);
+		}
+
+		private void UpdateEnemies(GameTime gameTime)
+		{
+			// Spawn a new enemy enemy every 1.5 seconds
+			if (gameTime.TotalGameTime - previousSpawnTime > enemySpawnTime)
+			{
+				previousSpawnTime = gameTime.TotalGameTime;
+
+				// Add an Enemy
+				AddEnemy();
+				
+
+
+			}
+
+			// Update the Enemies
+			for (int i = enemies.Count - 1; i >= 0; i--)
+			{
+				enemies[i].Update(gameTime);
+
+				if (enemies[i].Active == false)
+				{
+					// If not active and health <= 0
+					if (enemies[i].Health <= 0)
+					{
+						// Add an explosion
+						AddExplosion(enemies[i].Position);
+						//Add to the player's score
+						score += enemies[i].Score;
+					}
+					enemies.RemoveAt(i);
+				}
+			}
+		}
+
+		private void UpdateChickens(GameTime gameTime)
+		{
+			// Spawn a new enemy enemy every 1.5 seconds
+			if (gameTime.TotalGameTime - previousSpawnTime > chickenSpawnTime)
+			{
+				previousSpawnTime = gameTime.TotalGameTime;
+
+				// Add an Enemy
+				AddChickens();
+
+
+
+			}
+
+			// Update the Enemies
+			for (int i = chickens.Count - 1; i >= 0; i--)
+			{
+				chickens[i].Update(gameTime);
+
+				if (chickens[i].Active == false)
+				{
+					// If not active and health <= 0
+					if (chickens[i].Health <= 0)
+					{
+						// Add an explosion
+						AddExplosion(chickens[i].Position);
+						//Add to the player's score
+						score += chickens[i].Score;
+					}
+					chickens.RemoveAt(i);
+				}
+			}
+		}
+
+		private void UpdateCollision()
+		{
+			// Use the Rectangle's built-in intersect function to 
+			// determine if two objects are overlapping
+			Rectangle rectanglePlayer;
+			Rectangle rectangleMine;
+			Rectangle rectangleChicken;
+			Rectangle rectangleLaser;
+
+			// Only create the rectangle once for the player
+			rectanglePlayer = new Rectangle((int)player.Position.X,
+			(int)player.Position.Y,
+			player.Width,
+			player.Height);
+
+			// Do the collision between the player and the enemies
+			for (int i = 0; i < enemies.Count; i++)
+			{
+				rectangleMine = new Rectangle((int)enemies[i].Position.X,
+				(int)enemies[i].Position.Y,
+				enemies[i].Width,
+				enemies[i].Height);
+
+				// Determine if the two objects collided with each
+				// other
+				if (rectanglePlayer.Intersects(rectangleMine))
+				{
+					// Subtract the health from the player based on
+					// the enemy damage
+					player.Health -= enemies[i].Damage;
+
+					// Since the enemy collided with the player
+					// destroy it
+					enemies[i].Health = 0;
+
+					// If the player health is less than zero we died
+					if (player.Health <= 0)
+						player.Active = false;
+				}
+			}
+			// Projectile vs Enemy Collision
+			for (int i = 0; i < projectiles.Count; i++)
+			{
+				for (int j = 0; j < enemies.Count; j++)
+				{
+					// Create the rectangles we need to determine if we collided with each other
+					rectangleLaser = new Rectangle((int)projectiles[i].Position.X -
+					projectiles[i].Width / 2, (int)projectiles[i].Position.Y -
+					projectiles[i].Height / 2, projectiles[i].Width, projectiles[i].Height);
+
+					rectangleMine = new Rectangle((int)enemies[j].Position.X - enemies[j].Width / 2,
+					(int)enemies[j].Position.Y - enemies[j].Height / 2,
+					enemies[j].Width, enemies[j].Height);
+
+					// Determine if the two objects collided with each other
+					if (rectangleLaser.Intersects(rectangleMine))
+					{
+						enemies[j].Health -= projectiles[i].Damage;
+						projectiles[i].Active = false;
+					}
+				}
+			}
+
+			// Do the collision between the player and the enemies
+			for (int i = 0; i < chickens.Count; i++)
+			{
+				rectangleChicken = new Rectangle((int)chickens[i].Position.X,
+				(int)chickens[i].Position.Y,
+				chickens[i].Width,
+				chickens[i].Height);
+
+				// Determine if the two objects collided with each
+				// other
+				if (rectanglePlayer.Intersects(rectangleChicken))
+				{
+					// Subtract the health from the player based on
+					// the enemy damage
+					player.Health -= chickens[i].Damage;
+
+					// Since the enemy collided with the player
+					// destroy it
+					chickens[i].Health = 0;
+
+					// If the player health is less than zero we died
+					if (player.Health <= 0)
+						player.Active = false;
+				}
+			}
+			// Projectile vs Enemy Collision
+			for (int i = 0; i < projectiles.Count; i++)
+			{
+				for (int j = 0; j < chickens.Count; j++)
+				{
+					// Create the rectangles we need to determine if we collided with each other
+					rectangleLaser = new Rectangle((int)projectiles[i].Position.X -
+					projectiles[i].Width / 2, (int)projectiles[i].Position.Y -
+					projectiles[i].Height / 2, projectiles[i].Width, projectiles[i].Height);
+
+					rectangleChicken = new Rectangle((int)chickens[j].Position.X - chickens[j].Width / 2,
+					(int)chickens[j].Position.Y - chickens[j].Height / 2,
+					chickens[j].Width, chickens[j].Height);
+
+					// Determine if the two objects collided with each other
+					if (rectangleLaser.Intersects(rectangleChicken))
+					{
+						chickens[j].Health -= projectiles[i].Damage;
+						projectiles[i].Active = false;
+					}
+				}
+			}
+		}
+
+
+
+
+
+		private void AddProjectile(Vector2 position)
+		{
+			Projectile projectile = new Projectile();
+			projectile.Initialize(GraphicsDevice.Viewport, projectileTexture, position);
+			projectiles.Add(projectile);
+		}
+
+		private void UpdateProjectiles()
+		{
+			// Update the Projectiles
+			for (int i = projectiles.Count - 1; i >= 0; i--)
+			{
+				projectiles[i].Update();
+
+				if (projectiles[i].Active == false)
+				{
+					projectiles.RemoveAt(i);
+				}
+
+			}
+		}
+
+		private void AddExplosion(Vector2 position)
+		{
+			Animation explosion = new Animation();
+			explosion.Initialize(explosionTexture, position, 134, 134, 12, 45, Color.White, 1f, false);
+			explosions.Add(explosion);
+		}
+
+		private void UpdateExplosions(GameTime gameTime)
+		{
+			for (int i = explosions.Count - 1; i >= 0; i--)
+			{
+				explosions[i].Update(gameTime);
+				if (explosions[i].Active == false)
+				{
+					explosions.RemoveAt(i);
+				}
+			}
 		}
 
 		/// <summary>
@@ -149,17 +578,51 @@ namespace DerpyGame.Controller
 		{
 			graphics.GraphicsDevice.Clear(Color.Fuchsia);
 
-			//TODO: Add your drawing code here
 			// Start drawing
 			spriteBatch.Begin();
 
+			spriteBatch.Draw(mainBackground, Vector2.Zero, Color.White);
+
+			// Draw the moving background
+			bgLayer1.Draw(spriteBatch);
+			bgLayer2.Draw(spriteBatch);
+
+			// Draw the Enemies
+			for (int i = 0; i < enemies.Count; i++)
+			{
+				enemies[i].Draw(spriteBatch);
+			}
+
+			for (int i = 0; i<chickens.Count; i++)
+			{
+				chickens[i].Draw(spriteBatch);
+			}
+
 			// Draw the Player
 			player.Draw(spriteBatch);
+
+			// Draw the Projectiles
+			for (int i = 0; i < projectiles.Count; i++)
+			{
+				projectiles[i].Draw(spriteBatch);
+			}
+
+			// Draw the explosions
+			for (int i = 0; i < explosions.Count; i++)
+			{
+				explosions[i].Draw(spriteBatch);
+			}
+
+			// Draw the score
+			spriteBatch.DrawString(font, "score: " + score, new Vector2(GraphicsDevice.Viewport.TitleSafeArea.X, GraphicsDevice.Viewport.TitleSafeArea.Y), Color.White);
+			// Draw the player health
+			spriteBatch.DrawString(font, "health: " + player.Health, new Vector2(GraphicsDevice.Viewport.TitleSafeArea.X, GraphicsDevice.Viewport.TitleSafeArea.Y + 30), Color.White);
 
 			// Stop drawing
 			spriteBatch.End();
 
 			base.Draw(gameTime);
 		}
+
 	}
 }

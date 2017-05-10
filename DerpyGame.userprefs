@@ -1,9 +1,13 @@
 ﻿<Properties StartupConfiguration="{CC0D0DB8-553C-4AE6-B6DB-C8910B22C36D}|Default">
-  <MonoDevelop.Ide.Workbench ActiveDocument="DerpyGameMorning/View/Animation.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="DerpyGameMorning/Model/Chicken.cs">
     <Files>
-      <File FileName="DerpyGameMorning/Controller/Steampunk.cs" Line="92" Column="70" />
-      <File FileName="DerpyGameMorning/Model/Player.cs" Line="52" Column="22" />
-      <File FileName="DerpyGameMorning/View/Animation.cs" Line="2" Column="27" />
+      <File FileName="DerpyGameMorning/Controller/Steampunk.cs" Line="139" Column="70" />
+      <File FileName="DerpyGameMorning/View/Animation.cs" Line="66" Column="26" />
+      <File FileName="DerpyGameMorning/View/Background.cs" Line="42" Column="45" />
+      <File FileName="DerpyGameMorning/Model/Enemy.cs" Line="10" Column="3" />
+      <File FileName="DerpyGameMorning/Model/Projectile.cs" Line="65" Column="28" />
+      <File FileName="DerpyGameMorning/Model/Player.cs" Line="19" Column="3" />
+      <File FileName="DerpyGameMorning/Model/Chicken.cs" Line="17" Column="31" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug|x86" />

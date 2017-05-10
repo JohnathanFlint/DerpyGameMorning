@@ -12,13 +12,15 @@
     <File>/Users/nwhi5696/Documents/GameDev/DerpyGameMorning/DerpyGameMorning/Content/Texture/endMenu.png</File>
     <File>/Users/nwhi5696/Documents/GameDev/DerpyGameMorning/DerpyGameMorning/Content/Texture/laser.png</File>
     <File>/Users/nwhi5696/Documents/GameDev/DerpyGameMorning/DerpyGameMorning/Content/Texture/mainbackground.png</File>
-    <File>/Users/nwhi5696/Documents/GameDev/DerpyGameMorning/DerpyGameMorning/Content/Animation/explosion.png</File>
-    <File>/Users/nwhi5696/Documents/GameDev/DerpyGameMorning/DerpyGameMorning/Content/Animation/mineAnimation.png</File>
-    <File>/Users/nwhi5696/Documents/GameDev/DerpyGameMorning/DerpyGameMorning/Content/Animation/shipAnimation.png</File>
     <File>/Users/nwhi5696/Documents/GameDev/DerpyGameMorning/DerpyGameMorning/Content/Sound/explosion.wav</File>
     <File>/Users/nwhi5696/Documents/GameDev/DerpyGameMorning/DerpyGameMorning/Content/Sound/gameMusic.mp3</File>
     <File>/Users/nwhi5696/Documents/GameDev/DerpyGameMorning/DerpyGameMorning/Content/Sound/laserFire.wav</File>
     <File>/Users/nwhi5696/Documents/GameDev/DerpyGameMorning/DerpyGameMorning/Content/Sound/menuMusic.mp3</File>
     <File>/Users/nwhi5696/Documents/GameDev/DerpyGameMorning/DerpyGameMorning/Content/Font/gameFont.spritefont</File>
+    <File>/Users/nwhi5696/Documents/GameDev/DerpyGameMorning/DerpyGameMorning/Content/Animation/cuccoAnimation.png</File>
+    <File>/Users/nwhi5696/Documents/GameDev/DerpyGameMorning/DerpyGameMorning/Content/Animation/cuccoFly.png</File>
+    <File>/Users/nwhi5696/Documents/GameDev/DerpyGameMorning/DerpyGameMorning/Content/Animation/explosion.png</File>
+    <File>/Users/nwhi5696/Documents/GameDev/DerpyGameMorning/DerpyGameMorning/Content/Animation/mineAnimation.png</File>
+    <File>/Users/nwhi5696/Documents/GameDev/DerpyGameMorning/DerpyGameMorning/Content/Animation/shipAnimation.png</File>
   </SourceFiles>
 </SourceFileCollection>

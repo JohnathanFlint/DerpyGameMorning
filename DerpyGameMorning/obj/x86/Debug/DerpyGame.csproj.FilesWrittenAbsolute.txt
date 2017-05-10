@@ -34,3 +34,5 @@
 /Users/nwhi5696/Documents/GameDev/DerpyGameMorning/DerpyGameMorning/bin/Debug/Content/Sound/laserFire.xnb
 /Users/nwhi5696/Documents/GameDev/DerpyGameMorning/DerpyGameMorning/bin/Debug/Content/Sound/menuMusic.ogg
 /Users/nwhi5696/Documents/GameDev/DerpyGameMorning/DerpyGameMorning/bin/Debug/Content/Sound/menuMusic.xnb
+/Users/nwhi5696/Documents/GameDev/DerpyGameMorning/DerpyGameMorning/bin/Debug/Content/Animation/cuccoAnimation.xnb
+/Users/nwhi5696/Documents/GameDev/DerpyGameMorning/DerpyGameMorning/bin/Debug/Content/Animation/cuccoFly.xnb
