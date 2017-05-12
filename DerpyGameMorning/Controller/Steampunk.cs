@@ -47,7 +47,8 @@ namespace DerpyGame.Controller
 		// The rate at which the enemies appear
 		TimeSpan enemySpawnTime;
 		TimeSpan chickenSpawnTime;
-		TimeSpan previousSpawnTime;
+		TimeSpan previousEnemySpawnTime;
+        TimeSpan previousChickenSpawnTime;
 
 		// A random number generator
 		Random random;
@@ -89,7 +90,7 @@ namespace DerpyGame.Controller
 			player = new Player();
 
 			// Set a constant player move speed
-			playerMoveSpeed = 50.0f;
+			playerMoveSpeed = 25.0f;
 
 			bgLayer1 = new Background();
 			bgLayer2 = new Background();
@@ -99,11 +100,12 @@ namespace DerpyGame.Controller
 			chickens = new List<Chicken>();
 
 			// Set the time keepers to zero
-			previousSpawnTime = TimeSpan.Zero;
+			previousEnemySpawnTime = TimeSpan.Zero;
+            previousChickenSpawnTime = TimeSpan.Zero;
 
 			// Used to determine how fast enemy respawns
 			enemySpawnTime = TimeSpan.FromSeconds(.5f);
-			chickenSpawnTime = TimeSpan.FromSeconds(.05f);
+			chickenSpawnTime = TimeSpan.FromSeconds(1.0f);
 
 			// Initialize our random number generator
 			random = new Random();
@@ -333,7 +335,7 @@ namespace DerpyGame.Controller
 			chickenAnimation.Initialize(chickenTexture, Vector2.Zero, chickenTexture.Width/2, chickenTexture.Height, 2, 50, Color.White, 2f, true);
 
 			// Randomly generate the position of the enemy
-			Vector2 position = new Vector2(GraphicsDevice.Viewport.Width + chickenTexture.Width / 2, random.Next(100, GraphicsDevice.Viewport.Height - 100));
+            Vector2 position = new Vector2(random.Next(400, GraphicsDevice.Viewport.Width - 100), GraphicsDevice.Viewport.Height - 490);
 
 			// Create an enemy
 			Chicken chicken = new Chicken();
@@ -348,9 +350,9 @@ namespace DerpyGame.Controller
 		private void UpdateEnemies(GameTime gameTime)
 		{
 			// Spawn a new enemy enemy every 1.5 seconds
-			if (gameTime.TotalGameTime - previousSpawnTime > enemySpawnTime)
+			if (gameTime.TotalGameTime - previousEnemySpawnTime > enemySpawnTime)
 			{
-				previousSpawnTime = gameTime.TotalGameTime;
+				previousEnemySpawnTime = gameTime.TotalGameTime;
 
 				// Add an Enemy
 				AddEnemy();
@@ -382,9 +384,9 @@ namespace DerpyGame.Controller
 		private void UpdateChickens(GameTime gameTime)
 		{
 			// Spawn a new enemy enemy every 1.5 seconds
-			if (gameTime.TotalGameTime - previousSpawnTime > chickenSpawnTime)
+			if (gameTime.TotalGameTime - previousChickenSpawnTime > chickenSpawnTime)
 			{
-				previousSpawnTime = gameTime.TotalGameTime;
+				previousChickenSpawnTime = gameTime.TotalGameTime;
 
 				// Add an Enemy
 				AddChickens();

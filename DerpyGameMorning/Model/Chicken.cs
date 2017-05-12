@@ -63,7 +63,8 @@ namespace DerpyGame.Model
 		}
 
 		// The speed at which the enemy moves
-		float chickenMoveSpeed;
+		float chickenMoveSpeedX;
+        float chickenMoveSpeedY;
 
 		public void Initialize(Animation animation, Vector2 position)
 		{
@@ -78,13 +79,14 @@ namespace DerpyGame.Model
 
 
 			// Set the health of the enemy
-			Health = 1000;
+			Health = 100;
 
 			// Set the amount of damage the enemy can do
-			Damage = 10;
+			Damage = 9001;
 
 			// Set how fast the enemy moves
-			chickenMoveSpeed = 6f;
+			chickenMoveSpeedX = 5f;
+            chickenMoveSpeedY = 2f;
 
 
 			// Set the score value of the enemy
@@ -95,7 +97,8 @@ namespace DerpyGame.Model
 		public void Update(GameTime gameTime)
 		{
 			// The enemy always moves to the left so decrement it's xposition
-			Position.X -= chickenMoveSpeed;
+			Position.X -= chickenMoveSpeedX;
+            Position.Y += chickenMoveSpeedY;
 
 			// Update the position of the Animation
 				ChickenAnimation.Position = Position;
