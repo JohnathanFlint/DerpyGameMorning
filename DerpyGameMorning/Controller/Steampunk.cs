@@ -7,6 +7,8 @@ using DerpyGame.Model;
 using DerpyGame.View;
 using System.Collections.Generic;
 using System.Threading;
+using Microsoft.Xna.Framework.Audio;
+using Microsoft.Xna.Framework.Media;
 
 namespace DerpyGame.Controller
 {
@@ -68,6 +70,12 @@ namespace DerpyGame.Controller
 		// The font used to display UI elements
 		SpriteFont font;
 
+        int playerCKills;
+
+        SoundEffect laserSound;
+        SoundEffect explosionSound;
+        Song gameplayMusic;
+
 		#endregion
 
 		public Steampunk()
@@ -120,6 +128,8 @@ namespace DerpyGame.Controller
 			//Set player's score to zero
 			score = 0;
 
+            playerCKills = 0;
+
 			base.Initialize();
 		}
 
@@ -149,72 +159,77 @@ namespace DerpyGame.Controller
 			mainBackground = Content.Load<Texture2D>("Texture/mainbackground");
 			explosionTexture = Content.Load<Texture2D>("Animation/explosion");
 
+            gameplayMusic = Content.Load<Song>("Sound/gameMusic");
+            laserSound = Content.Load <SoundEffect> ("Sound/laserFire");
+            explosionSound = Content.Load<SoundEffect>("Sound/explosion");
+
 			// Load the score font
 			font = Content.Load<SpriteFont>("Font/gameFont");
+
+            PlayMusic(gameplayMusic);
 		}
 
-		/// <summary>
-		/// Allows the game to run logic such as updating the world,
-		/// checking for collisions, gathering input, and playing audio.
-		/// </summary>
-		/// <param name="gameTime">Provides a snapshot of timing values.</param>
-		protected override void Update(GameTime gameTime)
-		{
-			// For Mobile devices, this logic will close the Game when the Back button is pressed
-			// Exit() is obsolete on iOS
+        /// <summary>
+        /// Allows the game to run logic such as updating the world,
+        /// checking for collisions, gathering input, and playing audio.
+        /// </summary>
+        /// <param name="gameTime">Provides a snapshot of timing values.</param>
+        protected override void Update(GameTime gameTime)
+        {
+            // For Mobile devices, this logic will close the Game when the Back button is pressed
+            // Exit() is obsolete on iOS
 #if !__IOS__ && !__TVOS__
-			if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
-				Exit();
+            if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
+                Exit();
 #endif
-			//threads(gameTime);
+            //threads(gameTime);
 
-			// Save the previous state of the keyboard and game pad so we can determinesingle key/button presses
-			previousGamePadState = currentGamePadState;
-			previousKeyboardState = currentKeyboardState;
+            // Save the previous state of the keyboard and game pad so we can determinesingle key/button presses
+            previousGamePadState = currentGamePadState;
+            previousKeyboardState = currentKeyboardState;
 
-			// Read the current state of the keyboard and gamepad and store it
-			currentKeyboardState = Keyboard.GetState();
-			currentGamePadState = GamePad.GetState(PlayerIndex.One);
+            // Read the current state of the keyboard and gamepad and store it
+            currentKeyboardState = Keyboard.GetState();
+            currentGamePadState = GamePad.GetState(PlayerIndex.One);
 
 
-			//Update the player
-			UpdatePlayer(gameTime);
+            //Update the player
+            UpdatePlayer(gameTime);
 
-			// Update the parallaxing background
-			bgLayer1.Update();
-			bgLayer2.Update();
+            // Update the parallaxing background
+            bgLayer1.Update();
+            bgLayer2.Update();
 
-			// Update the enemies
-			UpdateEnemies(gameTime);
-			UpdateChickens(gameTime);
+            // Update the enemies
+            UpdateEnemies(gameTime);
+            UpdateChickens(gameTime);
 
-			// Update the collision
-			UpdateCollision();
+            // Update the collision
+            UpdateCollision();
 
-			// Update the projectiles
-			UpdateProjectiles();
+            // Update the projectiles
+            UpdateProjectiles();
 
-			// Update the explosions
-			UpdateExplosions(gameTime);
+            // Update the explosions
+            UpdateExplosions(gameTime);
 
-			base.Update(gameTime);
+            base.Update(gameTime);
+        }
+
+		private void PlayMusic(Song song)
+		{
+			// Due to the way the MediaPlayer plays music,
+			// we have to catch the exception. Music will play when the game is not tethered
+			try
+			{
+				// Play the music
+				MediaPlayer.Play(song);
+
+				// Loop the currently playing song
+				MediaPlayer.IsRepeating = true;
+			}
+			catch { } //No Exception is handled so it is an empty/anonymous exception
 		}
-
-		//private void threads()
-		//{
-		//	Steampunk bulletThread = new Steampunk();
-
-		//		Thread threadForBullets = new Thread(new ThreadStart(UpdateProjectiles));
-
-		//	threadForBullets.Start();
-
-		//	while (!threadForBullets.IsAlive)
-		//	{
-		//		Thread.Sleep(1);
-		//		threadForBullets.Abort();
-		//		threadForBullets.Join();
-		//	}
-		//}
 
 		private void UpdatePlayer(GameTime gameTime)
 		{
@@ -257,44 +272,51 @@ namespace DerpyGame.Controller
 				previousFireTime = gameTime.TotalGameTime;
 
 					AddProjectile(player.Position + new Vector2(player.Width / 2, 20));
+                    //laserSound.Play();
 
 					AddProjectile(player.Position + new Vector2(player.Width / 2, -20));
+                    //laserSound.Play();
 
 					AddProjectile(player.Position + new Vector2(player.Width / 2, 0));
+                    //laserSound.Play();
 					AddProjectile(player.Position + new Vector2(player.Width / 2, 0));
-
+                    //laserSound.Play();
 					AddProjectile(player.Position + new Vector2(player.Width / 2, 0));
+                //laserSound.Play();
 					AddProjectile(player.Position + new Vector2(player.Width / 2, 0));
-
+                //laserSound.Play();
 					AddProjectile(player.Position + new Vector2(player.Height / 2, 0));
-
+                //laserSound.Play();
 					AddProjectile(player.Position + new Vector2(player.Width / 2, 0));
-
+                //laserSound.Play();
 					AddProjectile(player.Position + new Vector2(-100, 0));
-
+                //laserSound.Play();
 					AddProjectile(player.Position + new Vector2(-100, 500));
-
+                //laserSound.Play();
 					AddProjectile(player.Position + new Vector2(-100, -500));
-
+                //laserSound.Play();
 					AddProjectile(player.Position + new Vector2(player.Width / 2, 20));
-
+                //laserSound.Play();
 					AddProjectile(player.Position + new Vector2(player.Width / 2, -20));
-
+                //laserSound.Play();
 					AddProjectile(player.Position + new Vector2(player.Width / 2, 0));
+                //laserSound.Play();
 					AddProjectile(player.Position + new Vector2(player.Width / 2, 0));
-
+                //laserSound.Play();
 					AddProjectile(player.Position + new Vector2(player.Width / 2, 0));
+                //laserSound.Play();
 					AddProjectile(player.Position + new Vector2(player.Width / 2, 0));
-
+                //laserSound.Play();
 					AddProjectile(player.Position + new Vector2(player.Height / 2, 0));
-
+                //laserSound.Play();
 					AddProjectile(player.Position + new Vector2(player.Width / 2, 0));
-
+                //laserSound.Play();
 					AddProjectile(player.Position + new Vector2(-500, 0));
-
+                //laserSound.Play();
 					AddProjectile(player.Position + new Vector2(-500, 500));
-
+                //laserSound.Play();
 					AddProjectile(player.Position + new Vector2(-500, -500));
+                laserSound.Play();
 			}
 
 			// reset score if player health goes to zero
@@ -345,6 +367,11 @@ namespace DerpyGame.Controller
 
 			// Add the enemy to the active enemies list
 			chickens.Add(chicken);
+
+            if(playerCKills >= 10)
+            {
+                chickens.Add(chicken);
+            }
 		}
 
 		private void UpdateEnemies(GameTime gameTime)
@@ -373,6 +400,7 @@ namespace DerpyGame.Controller
 					{
 						// Add an explosion
 						AddExplosion(enemies[i].Position);
+                        explosionSound.Play();
 						//Add to the player's score
 						score += enemies[i].Score;
 					}
@@ -409,6 +437,7 @@ namespace DerpyGame.Controller
 						AddExplosion(chickens[i].Position);
 						//Add to the player's score
 						score += chickens[i].Score;
+                        playerCKills++;
 					}
 					chickens.RemoveAt(i);
 				}
@@ -501,6 +530,7 @@ namespace DerpyGame.Controller
 					// If the player health is less than zero we died
 					if (player.Health <= 0)
 						player.Active = false;
+                    playerCKills++;
 				}
 			}
 			// Projectile vs Enemy Collision
@@ -522,6 +552,8 @@ namespace DerpyGame.Controller
 					{
 						chickens[j].Health -= projectiles[i].Damage;
 						projectiles[i].Active = false;
+
+
 					}
 				}
 			}

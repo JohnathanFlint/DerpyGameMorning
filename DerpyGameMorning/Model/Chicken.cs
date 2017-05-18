@@ -96,8 +96,19 @@ namespace DerpyGame.Model
 
 		public void Update(GameTime gameTime)
 		{
-			// The enemy always moves to the left so decrement it's xposition
-			Position.X -= chickenMoveSpeedX;
+            Random random = new Random();
+            int cRandom = random.Next(0, 1);
+
+            //if(cRandom >= 1)
+            //{
+            //    Position.X -= chickenMoveSpeedX;
+            //}
+            //else
+            //{
+            //  Position.X = chickenMoveSpeedX;  
+            //}
+
+            Position.X -= chickenMoveSpeedX;			
             Position.Y += chickenMoveSpeedY;
 
 			// Update the position of the Animation
