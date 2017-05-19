@@ -32,6 +32,7 @@ namespace DerpyGame.Controller
 
 		// A movement speed for the player
 		private float playerMoveSpeed;
+        private float shieldMoveSpeed;
 
 		// Image used to display the static background
 		Texture2D mainBackground;
@@ -45,6 +46,13 @@ namespace DerpyGame.Controller
 		List<Enemy> enemies;
 		Texture2D chickenTexture;
 		List<Chicken> chickens;
+
+        //Shield
+        Texture2D overshieldTexture;
+        Texture2D overshieldGenTexture;
+        Texture2D overshieldDeathTexture;
+        private OverShield shield;
+        bool isShielded;
 
 		// The rate at which the enemies appear
 		TimeSpan enemySpawnTime;
@@ -71,10 +79,13 @@ namespace DerpyGame.Controller
 		SpriteFont font;
 
         int playerCKills;
+        int totalChickens;
 
         SoundEffect laserSound;
         SoundEffect explosionSound;
         Song gameplayMusic;
+
+
 
 		#endregion
 
@@ -96,9 +107,11 @@ namespace DerpyGame.Controller
 
 			// Initialize the player class
 			player = new Player();
+            shield = new OverShield();
 
 			// Set a constant player move speed
 			playerMoveSpeed = 25.0f;
+            shieldMoveSpeed = 25.0f;
 
 			bgLayer1 = new Background();
 			bgLayer2 = new Background();
@@ -106,6 +119,8 @@ namespace DerpyGame.Controller
 			// Initialize the enemies list
 			enemies = new List<Enemy>();
 			chickens = new List<Chicken>();
+            //shields = new List<OverShield>();
+            isShielded = false;
 
 			// Set the time keepers to zero
 			previousEnemySpawnTime = TimeSpan.Zero;
@@ -127,7 +142,7 @@ namespace DerpyGame.Controller
 
 			//Set player's score to zero
 			score = 0;
-
+            totalChickens = 0;
             playerCKills = 0;
 
 			base.Initialize();
@@ -160,8 +175,12 @@ namespace DerpyGame.Controller
 			explosionTexture = Content.Load<Texture2D>("Animation/explosion");
 
             gameplayMusic = Content.Load<Song>("Sound/gameMusic");
-            laserSound = Content.Load <SoundEffect> ("Sound/laserFire");
+           laserSound = Content.Load <SoundEffect> ("Sound/laserFire");
             explosionSound = Content.Load<SoundEffect>("Sound/explosion");
+
+            overshieldTexture = Content.Load<Texture2D>("Texture/shield");
+            overshieldGenTexture = Content.Load<Texture2D>("Animation/shieldGen");
+            overshieldDeathTexture = Content.Load<Texture2D>("Animation/shieldDeath");
 
 			// Load the score font
 			font = Content.Load<SpriteFont>("Font/gameFont");
@@ -182,7 +201,6 @@ namespace DerpyGame.Controller
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 #endif
-            //threads(gameTime);
 
             // Save the previous state of the keyboard and game pad so we can determinesingle key/button presses
             previousGamePadState = currentGamePadState;
@@ -316,7 +334,7 @@ namespace DerpyGame.Controller
 					AddProjectile(player.Position + new Vector2(-500, 500));
                 //laserSound.Play();
 					AddProjectile(player.Position + new Vector2(-500, -500));
-                laserSound.Play();
+               //laserSound.Play();
 			}
 
 			// reset score if player health goes to zero
@@ -326,6 +344,80 @@ namespace DerpyGame.Controller
 				score = 0;
 			}
 		}
+
+        //private void AddShield()
+        //{
+        //    Animation overshieldAnimation = new Animation();
+        //    Animation overshieldDeathAnimation = new Animation();
+        //    Animation overshieldGenAnimation = new Animation();
+
+        //    overshieldAnimation.Initialize(overshieldTexture, Vector2.Zero, 47, 61, 8, 30, Color.White, 1f, true);
+        //    overshieldDeathAnimation.Initialize(overshieldGenTexture, Vector2.Zero, 47, 61, 8, 30, Color.White, 1f, true);
+        //    overshieldGenAnimation.Initialize(overshieldDeathTexture, Vector2.Zero, 47, 61, 8, 30, Color.White, 1f, true);
+
+        //    Vector2 position = new Vector2(player.Position.X, player.Position.Y);
+
+        //    OverShield shield = new OverShield();
+        //    shield.Initialize(overshieldAnimation, position);
+
+        //    shields.Add(shield);
+        //}
+
+        private void UpdateShield()
+        {
+			// Use the Keyboard / Dpad
+			if (currentKeyboardState.IsKeyDown(Keys.Left) ||
+			currentGamePadState.DPad.Left == ButtonState.Pressed)
+			{
+				shield.Position.X -= playerMoveSpeed;
+			}
+			if (currentKeyboardState.IsKeyDown(Keys.Right) ||
+			currentGamePadState.DPad.Right == ButtonState.Pressed)
+			{
+				shield.Position.X += playerMoveSpeed;
+			}
+			if (currentKeyboardState.IsKeyDown(Keys.Up) ||
+			currentGamePadState.DPad.Up == ButtonState.Pressed)
+			{
+				shield.Position.Y -= playerMoveSpeed;
+			}
+			if (currentKeyboardState.IsKeyDown(Keys.Down) ||
+			currentGamePadState.DPad.Down == ButtonState.Pressed)
+			{
+				shield.Position.Y += playerMoveSpeed;
+			}
+            if (currentKeyboardState.IsKeyDown(Keys.RightShift) ||
+			currentGamePadState.DPad.Down == ButtonState.Pressed)
+			{
+                if(isShielded)
+                {
+                    isShielded = false;
+                }
+                else if(!isShielded)
+                {
+                    isShielded = true;
+                }
+			}
+
+			// Make sure that the player does not go out of bounds
+			shield.Position.X = MathHelper.Clamp(player.Position.X, 0, GraphicsDevice.Viewport.Width - player.Width);
+			shield.Position.Y = MathHelper.Clamp(player.Position.Y, 0, GraphicsDevice.Viewport.Height - player.Height);
+
+            if(isShielded)
+            {
+				    Animation overshieldAnimation = new Animation();
+				    Animation overshieldDeathAnimation = new Animation();
+				    Animation overshieldGenAnimation = new Animation();
+
+				    overshieldAnimation.Initialize(overshieldTexture, Vector2.Zero, 47, 61, 8, 30, Color.White, 1f, true);
+				    overshieldDeathAnimation.Initialize(overshieldGenTexture, Vector2.Zero, 47, 61, 8, 30, Color.White, 1f, true);
+				    overshieldGenAnimation.Initialize(overshieldDeathTexture, Vector2.Zero, 47, 61, 8, 30, Color.White, 1f, true);
+
+				    Vector2 position = new Vector2(player.Position.X, player.Position.Y);
+
+				    shield.Initialize(overshieldAnimation, position);
+			}
+        }
 
 		private void AddEnemy()
 		{
@@ -368,12 +460,42 @@ namespace DerpyGame.Controller
 			// Add the enemy to the active enemies list
 			chickens.Add(chicken);
 
-            if(playerCKills >= 10)
-            {
-                chickens.Add(chicken);
-            }
+            totalChickens++;
+
+            //if(playerCKills >= 10)
+            //{
+            //    chickens.Add(chicken);
+            //    totalChickens++;
+            //}
 		}
 
+        private void AddChickens2(int index)
+        {
+            Animation chickenAnimation = new Animation();
+
+            chickenAnimation.Initialize(chickenTexture, Vector2.Zero, chickenTexture.Width / 2, chickenTexture.Height, 2, 50, Color.White, 2f, true);
+
+            Vector2 position = new Vector2(chickens[index].Position.X + 50,chickens[index].Position.Y + 50);
+            Vector2 position1 = new Vector2(chickens[index].Position.X - 50, chickens[index].Position.Y - 50);
+            Vector2 position2 = new Vector2(chickens[index].Position.X + 50, chickens[index].Position.Y - 50);
+            Vector2 position3 = new Vector2(chickens[index].Position.X - 50, chickens[index].Position.Y + 50);
+
+            Chicken chicken = new Chicken();
+            Chicken chicken1 = new Chicken();
+            Chicken chicken2 = new Chicken();
+            Chicken chicken3 = new Chicken();
+
+            chicken.Initialize(chickenAnimation, position);
+			chicken1.Initialize(chickenAnimation, position1);
+			chicken2.Initialize(chickenAnimation, position2);
+			chicken3.Initialize(chickenAnimation, position3);
+
+            chickens.Add(chicken);
+            chickens.Add(chicken1);
+            chickens.Add(chicken2);
+            chickens.Add(chicken3);
+
+        }
 		private void UpdateEnemies(GameTime gameTime)
 		{
 			// Spawn a new enemy enemy every 1.5 seconds
@@ -400,7 +522,7 @@ namespace DerpyGame.Controller
 					{
 						// Add an explosion
 						AddExplosion(enemies[i].Position);
-                        explosionSound.Play();
+                        //explosionSound.Play();
 						//Add to the player's score
 						score += enemies[i].Score;
 					}
@@ -430,13 +552,22 @@ namespace DerpyGame.Controller
 
 				if (chickens[i].Active == false)
 				{
+                    totalChickens--;
 					// If not active and health <= 0
 					if (chickens[i].Health <= 0)
 					{
+						
 						// Add an explosion
 						AddExplosion(chickens[i].Position);
-						//Add to the player's score
+                        //Add to the player's score
+                        if (totalChickens < 100)
+                        {
+                            AddChickens2(i);
+                            totalChickens += 4;
+                        }
+
 						score += chickens[i].Score;
+                       
                         playerCKills++;
 					}
 					chickens.RemoveAt(i);

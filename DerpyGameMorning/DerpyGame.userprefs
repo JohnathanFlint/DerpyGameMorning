@@ -1,10 +1,19 @@
 ﻿<Properties StartupConfiguration="{CC0D0DB8-553C-4AE6-B6DB-C8910B22C36D}|Default">
-  <MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.Workbench ActiveDocument="Model/OverShield.cs">
     <Files>
-      <File FileName="Controller/Program.cs" Line="1" Column="1" />
-      <File FileName="Controller/Steampunk.cs" Line="403" Column="28" />
-      <File FileName="Model/Chicken.cs" Line="102" Column="12" />
+      <File FileName="Controller/Program.cs" Line="1" Column="1" NotebookId="1" />
+      <File FileName="Controller/Steampunk.cs" Line="52" Column="25" NotebookId="1" />
+      <File FileName="Model/OverShield.cs" Line="6" Column="20" NotebookId="1" />
+      <File FileName="Model/Enemy.cs" Line="1" Column="1" NotebookId="1" />
+      <File FileName="Model/Player.cs" Line="1" Column="1" NotebookId="1" />
     </Files>
+    <FloatingWindows>
+      <FloatingWindow WindowId="1" X="1920" Y="23" Width="1280" Height="979">
+        <Files>
+          <File FileName="Model/Chicken.cs" Line="2" Column="1" />
+        </Files>
+      </FloatingWindow>
+    </FloatingWindows>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Release|x86" />
   <MonoDevelop.Ide.ItemProperties.DerpyGame PreferredExecutionTarget="MonoDevelop.Default" />

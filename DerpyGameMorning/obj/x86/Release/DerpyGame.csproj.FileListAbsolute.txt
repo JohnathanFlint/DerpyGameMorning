@@ -34,3 +34,7 @@
 /Users/nwhi5696/Documents/GameDev/DerpyGameMorning/DerpyGameMorning/bin/Release/MonoGame.Framework.xml
 /Users/nwhi5696/Documents/GameDev/DerpyGameMorning/DerpyGameMorning/obj/x86/Release/DerpyGame.csproj.CoreCompileInputs.cache
 /Users/nwhi5696/Documents/GameDev/DerpyGameMorning/DerpyGameMorning/obj/x86/Release/DerpyGameMorning.exe
+/Users/nwhi5696/Documents/GameDev/DerpyGameMorning/DerpyGameMorning/obj/x86/Release/DerpyGame.csprojResolveAssemblyReference.cache
+/Users/nwhi5696/Documents/GameDev/DerpyGameMorning/DerpyGameMorning/bin/Release/Content/Animation/shieldDeath.xnb
+/Users/nwhi5696/Documents/GameDev/DerpyGameMorning/DerpyGameMorning/bin/Release/Content/Animation/shieldGen.xnb
+/Users/nwhi5696/Documents/GameDev/DerpyGameMorning/DerpyGameMorning/bin/Release/Content/Texture/shield.xnb

@@ -86,11 +86,11 @@ namespace DerpyGame.Model
 
 			// Set how fast the enemy moves
 			chickenMoveSpeedX = 5f;
-            chickenMoveSpeedY = 2f;
+            chickenMoveSpeedY = 5f;
 
 
 			// Set the score value of the enemy
-			Score = 100;
+			Score = 500;
 
 		}
 

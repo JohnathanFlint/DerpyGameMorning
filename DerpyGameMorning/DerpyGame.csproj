@@ -46,6 +46,7 @@
     <Compile Include="Model\Enemy.cs" />
     <Compile Include="Model\Projectile.cs" />
     <Compile Include="Model\Chicken.cs" />
+    <Compile Include="Model\OverShield.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.manifest" />
