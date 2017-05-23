@@ -32,7 +32,6 @@ namespace DerpyGame.Controller
 
 		// A movement speed for the player
 		private float playerMoveSpeed;
-        private float shieldMoveSpeed;
 
 		// Image used to display the static background
 		Texture2D mainBackground;
@@ -52,13 +51,14 @@ namespace DerpyGame.Controller
         Texture2D overshieldGenTexture;
         Texture2D overshieldDeathTexture;
         private OverShield shield;
-        bool isShielded;
 
 		// The rate at which the enemies appear
 		TimeSpan enemySpawnTime;
 		TimeSpan chickenSpawnTime;
 		TimeSpan previousEnemySpawnTime;
         TimeSpan previousChickenSpawnTime;
+        TimeSpan previousShieldPress;
+        TimeSpan shieldRate;
 
 		// A random number generator
 		Random random;
@@ -111,7 +111,6 @@ namespace DerpyGame.Controller
 
 			// Set a constant player move speed
 			playerMoveSpeed = 25.0f;
-            shieldMoveSpeed = 25.0f;
 
 			bgLayer1 = new Background();
 			bgLayer2 = new Background();
@@ -120,15 +119,16 @@ namespace DerpyGame.Controller
 			enemies = new List<Enemy>();
 			chickens = new List<Chicken>();
             //shields = new List<OverShield>();
-            isShielded = false;
 
 			// Set the time keepers to zero
 			previousEnemySpawnTime = TimeSpan.Zero;
             previousChickenSpawnTime = TimeSpan.Zero;
+            previousShieldPress = TimeSpan.Zero;
 
 			// Used to determine how fast enemy respawns
 			enemySpawnTime = TimeSpan.FromSeconds(.5f);
 			chickenSpawnTime = TimeSpan.FromSeconds(1.0f);
+            shieldRate = TimeSpan.FromSeconds(.1f);
 
 			// Initialize our random number generator
 			random = new Random();
@@ -233,7 +233,6 @@ namespace DerpyGame.Controller
 
             base.Update(gameTime);
         }
-
 		private void PlayMusic(Song song)
 		{
 			// Due to the way the MediaPlayer plays music,
@@ -278,13 +277,26 @@ namespace DerpyGame.Controller
 			{
 				player.Position.Y += playerMoveSpeed;
 			}
+            if (currentKeyboardState.IsKeyDown(Keys.RightShift) && gameTime.TotalGameTime - previousShieldPress > shieldRate)
+			{
+                previousShieldPress = gameTime.TotalGameTime;
+
+				if (player.IsShielded)
+				{
+					player.IsShielded = false;
+				}
+				else if (!player.IsShielded)
+				{
+					player.IsShielded = true;
+				}
+			}
 
 			// Make sure that the player does not go out of bounds
 			player.Position.X = MathHelper.Clamp(player.Position.X, 0, GraphicsDevice.Viewport.Width - player.Width);
-			player.Position.Y = MathHelper.Clamp(player.Position.Y, 0, GraphicsDevice.Viewport.Height - player.Height);
+            player.Position.Y = MathHelper.Clamp(player.Position.Y, 0, GraphicsDevice.Viewport.Height - player.Height);
 
 			// Fire only every interval we set as the fireTime
-			if (gameTime.TotalGameTime - previousFireTime > fireTime)
+            if (gameTime.TotalGameTime - previousFireTime > fireTime && !player.IsShielded)
 			{
 				// Reset our current time
 				previousFireTime = gameTime.TotalGameTime;
@@ -300,8 +312,8 @@ namespace DerpyGame.Controller
 					AddProjectile(player.Position + new Vector2(player.Width / 2, 0));
                     //laserSound.Play();
 					AddProjectile(player.Position + new Vector2(player.Width / 2, 0));
-                //laserSound.Play();
-					AddProjectile(player.Position + new Vector2(player.Width / 2, 0));
+				//lasovershoversherSound.Play();
+                AddProjectile(player.Position + new Vector2(player.Width / 2, 0));
                 //laserSound.Play();
 					AddProjectile(player.Position + new Vector2(player.Height / 2, 0));
                 //laserSound.Play();
@@ -324,7 +336,7 @@ namespace DerpyGame.Controller
 					AddProjectile(player.Position + new Vector2(player.Width / 2, 0));
                 //laserSound.Play();
 					AddProjectile(player.Position + new Vector2(player.Width / 2, 0));
-                //laserSound.Play();
+				//laserSound.Play();
 					AddProjectile(player.Position + new Vector2(player.Height / 2, 0));
                 //laserSound.Play();
 					AddProjectile(player.Position + new Vector2(player.Width / 2, 0));
@@ -363,61 +375,63 @@ namespace DerpyGame.Controller
         //    shields.Add(shield);
         //}
 
-        private void UpdateShield()
-        {
-			// Use the Keyboard / Dpad
-			if (currentKeyboardState.IsKeyDown(Keys.Left) ||
-			currentGamePadState.DPad.Left == ButtonState.Pressed)
-			{
-				shield.Position.X -= playerMoveSpeed;
-			}
-			if (currentKeyboardState.IsKeyDown(Keys.Right) ||
-			currentGamePadState.DPad.Right == ButtonState.Pressed)
-			{
-				shield.Position.X += playerMoveSpeed;
-			}
-			if (currentKeyboardState.IsKeyDown(Keys.Up) ||
-			currentGamePadState.DPad.Up == ButtonState.Pressed)
-			{
-				shield.Position.Y -= playerMoveSpeed;
-			}
-			if (currentKeyboardState.IsKeyDown(Keys.Down) ||
-			currentGamePadState.DPad.Down == ButtonState.Pressed)
-			{
-				shield.Position.Y += playerMoveSpeed;
-			}
-            if (currentKeyboardState.IsKeyDown(Keys.RightShift) ||
-			currentGamePadState.DPad.Down == ButtonState.Pressed)
-			{
-                if(isShielded)
-                {
-                    isShielded = false;
-                }
-                else if(!isShielded)
-                {
-                    isShielded = true;
-                }
-			}
+   //     private void UpdateShield()
+   //     {
+			//// Use the Keyboard / Dpad
+			//if (currentKeyboardState.IsKeyDown(Keys.Left) ||
+			//currentGamePadState.DPad.Left == ButtonState.Pressed)
+			//{
+			//	shield.Position.X -= playerMoveSpeed;
+			//}
+			//if (currentKeyboardState.IsKeyDown(Keys.Right) ||
+			//currentGamePadState.DPad.Right == ButtonState.Pressed)
+			//{
+			//	shield.Position.X += playerMoveSpeed;
+			//}
+			//if (currentKeyboardState.IsKeyDown(Keys.Up) ||
+			//currentGamePadState.DPad.Up == ButtonState.Pressed)
+			//{
+			//	shield.Position.Y -= playerMoveSpeed;
+			//}
+			//if (currentKeyboardState.IsKeyDown(Keys.Down) ||
+			//currentGamePadState.DPad.Down == ButtonState.Pressed)
+			//{
+			//	shield.Position.Y += playerMoveSpeed;
+			//}
+   //         if (currentKeyboardState.IsKeyDown(Keys.RightShift) ||
+			//currentGamePadState.DPad.Down == ButtonState.Pressed)
+			//{
+   //             if(isShielded)
+   //             {
+   //                 isShielded = false;
+   //             }
+   //             else if(!isShielded)
+   //             {
+   //                 isShielded = true;
+   //             }
+			//}
 
-			// Make sure that the player does not go out of bounds
-			shield.Position.X = MathHelper.Clamp(player.Position.X, 0, GraphicsDevice.Viewport.Width - player.Width);
-			shield.Position.Y = MathHelper.Clamp(player.Position.Y, 0, GraphicsDevice.Viewport.Height - player.Height);
+			//// Make sure that the player does not go out of bounds
+			//shield.Position.X = MathHelper.Clamp(player.Position.X, 0, GraphicsDevice.Viewport.Width - player.Width);
+			//shield.Position.Y = MathHelper.Clamp(player.Position.Y, 0, GraphicsDevice.Viewport.Height - player.Height);
 
-            if(isShielded)
-            {
-				    Animation overshieldAnimation = new Animation();
-				    Animation overshieldDeathAnimation = new Animation();
-				    Animation overshieldGenAnimation = new Animation();
+   //         if(isShielded)
+   //         {
+			//	    Animation overshieldAnimation = new Animation();
+			//	    Animation overshieldDeathAnimation = new Animation();
+			//	    Animation overshieldGenAnimation = new Animation();
 
-				    overshieldAnimation.Initialize(overshieldTexture, Vector2.Zero, 47, 61, 8, 30, Color.White, 1f, true);
-				    overshieldDeathAnimation.Initialize(overshieldGenTexture, Vector2.Zero, 47, 61, 8, 30, Color.White, 1f, true);
-				    overshieldGenAnimation.Initialize(overshieldDeathTexture, Vector2.Zero, 47, 61, 8, 30, Color.White, 1f, true);
+			//	    overshieldAnimation.Initialize(overshieldTexture, Vector2.Zero, 47, 61, 8, 30, Color.White, 1f, true);
+			//	    overshieldDeathAnimation.Initialize(overshieldGenTexture, Vector2.Zero, 47, 61, 8, 30, Color.White, 1f, true);
+			//	    overshieldGenAnimation.Initialize(overshieldDeathTexture, Vector2.Zero, 47, 61, 8, 30, Color.White, 1f, true);
 
-				    Vector2 position = new Vector2(player.Position.X, player.Position.Y);
+			//	    Vector2 position = new Vector2(player.Position.X, player.Position.Y);
 
-				    shield.Initialize(overshieldAnimation, position);
-			}
-        }
+			//	    shield.Initialize(overshieldAnimation, position);
+
+   //             shield.Draw(spriteBatch);
+			//}
+        //}
 
 		private void AddEnemy()
 		{
@@ -600,7 +614,7 @@ namespace DerpyGame.Controller
 
 				// Determine if the two objects collided with each
 				// other
-				if (rectanglePlayer.Intersects(rectangleMine))
+                if (rectanglePlayer.Intersects(rectangleMine) && !player.IsShielded)
 				{
 					// Subtract the health from the player based on
 					// the enemy damage
@@ -648,7 +662,7 @@ namespace DerpyGame.Controller
 
 				// Determine if the two objects collided with each
 				// other
-				if (rectanglePlayer.Intersects(rectangleChicken))
+				if (rectanglePlayer.Intersects(rectangleChicken) && !player.IsShielded)
 				{
 					// Subtract the health from the player based on
 					// the enemy damage
@@ -763,8 +777,8 @@ namespace DerpyGame.Controller
 				chickens[i].Draw(spriteBatch);
 			}
 
-			// Draw the Player
-			player.Draw(spriteBatch);
+            // Draw the Player
+            player.Draw(spriteBatch);
 
 			// Draw the Projectiles
 			for (int i = 0; i < projectiles.Count; i++)

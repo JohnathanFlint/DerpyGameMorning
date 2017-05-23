@@ -2,7 +2,7 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using DerpyGame.View;
-
+using DerpyGame.Controller;
 namespace DerpyGame.Model
 {
 	public class Player
@@ -14,7 +14,7 @@ namespace DerpyGame.Model
 			get { return playerAnimation; }
 			set { playerAnimation = value; }
 		}
-
+        public bool IsShielded;
 		// Position of the Player relative to the upper left side of the screen
 
 		public Vector2 Position;
@@ -49,6 +49,8 @@ namespace DerpyGame.Model
 
 		public void Initialize(Animation animation, Vector2 position)
 		{
+            IsShielded = false;
+
 			PlayerAnimation = animation;
 
 			// Set the starting position of the player around the middle of the screen and to the back
@@ -71,7 +73,14 @@ namespace DerpyGame.Model
 		// Draw the player
 		public void Draw(SpriteBatch spriteBatch)
 		{
-			PlayerAnimation.Draw(spriteBatch);
+            if(IsShielded)
+            {
+                
+            }
+            else
+            {
+               PlayerAnimation.Draw(spriteBatch);
+            }
 		}
 
 		public Player()
