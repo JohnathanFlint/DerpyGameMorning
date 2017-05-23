@@ -1,11 +1,11 @@
 ﻿<Properties StartupConfiguration="{CC0D0DB8-553C-4AE6-B6DB-C8910B22C36D}|Default">
-  <MonoDevelop.Ide.Workbench ActiveDocument="Model/OverShield.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Controller/Steampunk.cs">
     <Files>
       <File FileName="Controller/Program.cs" Line="1" Column="1" NotebookId="1" />
-      <File FileName="Controller/Steampunk.cs" Line="52" Column="25" NotebookId="1" />
-      <File FileName="Model/OverShield.cs" Line="6" Column="20" NotebookId="1" />
+      <File FileName="Controller/Steampunk.cs" Line="418" Column="58" NotebookId="1" />
+      <File FileName="Model/OverShield.cs" Line="68" Column="26" NotebookId="1" />
       <File FileName="Model/Enemy.cs" Line="1" Column="1" NotebookId="1" />
-      <File FileName="Model/Player.cs" Line="1" Column="1" NotebookId="1" />
+      <File FileName="Model/Player.cs" Line="6" Column="7" NotebookId="1" />
     </Files>
     <FloatingWindows>
       <FloatingWindow WindowId="1" X="1920" Y="23" Width="1280" Height="979">
