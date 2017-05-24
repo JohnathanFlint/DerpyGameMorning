@@ -14,6 +14,13 @@ namespace DerpyGame.Model
 			get { return playerAnimation; }
 			set { playerAnimation = value; }
 		}
+
+        private Animation shieldedAnimation;
+        public Animation ShieldedAnimation
+        {
+            get { return shieldedAnimation; }
+            set { shieldedAnimation = value; }
+        }
         public bool IsShielded;
 		// Position of the Player relative to the upper left side of the screen
 
@@ -47,10 +54,10 @@ namespace DerpyGame.Model
 			get { return PlayerAnimation.FrameHeight; }
 		}
 
-		public void Initialize(Animation animation, Vector2 position)
+		public void Initialize(Animation animation,Animation shield, Vector2 position)
 		{
             IsShielded = false;
-
+            ShieldedAnimation = shield;
 			PlayerAnimation = animation;
 
 			// Set the starting position of the player around the middle of the screen and to the back
@@ -66,8 +73,16 @@ namespace DerpyGame.Model
 		// Update the player animation
 		public void Update(GameTime gameTime)
 		{
-			PlayerAnimation.Position = Position;
-			PlayerAnimation.Update(gameTime);
+            if (!IsShielded)
+            {
+                PlayerAnimation.Position = Position;
+                PlayerAnimation.Update(gameTime);
+            }
+            else
+            {
+                ShieldedAnimation.Position = Position;
+                ShieldedAnimation.Update(gameTime);
+            }
 		}	
 
 		// Draw the player
@@ -75,7 +90,7 @@ namespace DerpyGame.Model
 		{
             if(IsShielded)
             {
-                
+                ShieldedAnimation.Draw(spriteBatch);
             }
             else
             {

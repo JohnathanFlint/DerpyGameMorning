@@ -159,12 +159,16 @@ namespace DerpyGame.Controller
 
 			// Load the player resources
 			Animation playerAnimation = new Animation();
+            Animation shieldedAnimation = new Animation();
+            Texture2D shieldedTexture = Content.Load<Texture2D>("Animation/ShieldedAnimation");
 			Texture2D playerTexture = Content.Load<Texture2D>("Animation/shipAnimation");
 			playerAnimation.Initialize(playerTexture, Vector2.Zero, 115, 69, 8, 30, Color.White, 1f, true);
+            shieldedAnimation.Initialize(shieldedTexture, Vector2.Zero, 150, 100, 8, 50, Color.White, 1f, true);
 
 			Vector2 playerPosition = new Vector2(GraphicsDevice.Viewport.TitleSafeArea.X, GraphicsDevice.Viewport.TitleSafeArea.Y
 			+ GraphicsDevice.Viewport.TitleSafeArea.Height / 2);
-			player.Initialize(playerAnimation, playerPosition);
+            player.Initialize(playerAnimation,shieldedAnimation, playerPosition);
+           // player.Initialize(shieldedAnimation, playerPosition);
 
 			bgLayer1.Initialize(Content, "Texture/bgLayer1", GraphicsDevice.Viewport.Width, -1);
 			bgLayer2.Initialize(Content, "Texture/bgLayer2", GraphicsDevice.Viewport.Width, -2);

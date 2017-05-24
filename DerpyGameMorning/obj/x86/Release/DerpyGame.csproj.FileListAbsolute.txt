@@ -38,3 +38,4 @@
 /Users/nwhi5696/Documents/GameDev/DerpyGameMorning/DerpyGameMorning/bin/Release/Content/Animation/shieldDeath.xnb
 /Users/nwhi5696/Documents/GameDev/DerpyGameMorning/DerpyGameMorning/bin/Release/Content/Animation/shieldGen.xnb
 /Users/nwhi5696/Documents/GameDev/DerpyGameMorning/DerpyGameMorning/bin/Release/Content/Texture/shield.xnb
+/Users/nwhi5696/Documents/GameDev/DerpyGameMorning/DerpyGameMorning/bin/Release/Content/Animation/ShieldedAnimation.xnb
