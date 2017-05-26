@@ -293,11 +293,16 @@ namespace DerpyGame.Controller
 				{
 					player.IsShielded = false;
 				}
-				else if (!player.IsShielded)
+				else if (!player.IsShielded && score > 0)
 				{
 					player.IsShielded = true;
 				}
 			}
+
+            if (score == 0)
+            {
+                player.IsShielded = false;
+            }
 
             if(player.IsShielded)
             {
