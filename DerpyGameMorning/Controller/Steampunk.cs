@@ -59,6 +59,8 @@ namespace DerpyGame.Controller
         TimeSpan previousChickenSpawnTime;
         TimeSpan previousShieldPress;
         TimeSpan shieldRate;
+        TimeSpan shieldTime;
+        TimeSpan shieldOn;
 
 		// A random number generator
 		Random random;
@@ -124,11 +126,13 @@ namespace DerpyGame.Controller
 			previousEnemySpawnTime = TimeSpan.Zero;
             previousChickenSpawnTime = TimeSpan.Zero;
             previousShieldPress = TimeSpan.Zero;
+            shieldOn = TimeSpan.Zero;
 
 			// Used to determine how fast enemy respawns
 			enemySpawnTime = TimeSpan.FromSeconds(.5f);
 			chickenSpawnTime = TimeSpan.FromSeconds(1.0f);
             shieldRate = TimeSpan.FromSeconds(.1f);
+            shieldTime = TimeSpan.FromSeconds(1.0f);
 
 			// Initialize our random number generator
 			random = new Random();
@@ -163,7 +167,7 @@ namespace DerpyGame.Controller
             Texture2D shieldedTexture = Content.Load<Texture2D>("Animation/ShieldedAnimation");
 			Texture2D playerTexture = Content.Load<Texture2D>("Animation/shipAnimation");
 			playerAnimation.Initialize(playerTexture, Vector2.Zero, 115, 69, 8, 30, Color.White, 1f, true);
-            shieldedAnimation.Initialize(shieldedTexture, Vector2.Zero, 150, 100, 8, 50, Color.White, 1f, true);
+            shieldedAnimation.Initialize(shieldedTexture, Vector2.Zero, 200, 200, 8, 30, Color.White, 1f, true);
 
 			Vector2 playerPosition = new Vector2(GraphicsDevice.Viewport.TitleSafeArea.X, GraphicsDevice.Viewport.TitleSafeArea.Y
 			+ GraphicsDevice.Viewport.TitleSafeArea.Height / 2);
@@ -295,6 +299,14 @@ namespace DerpyGame.Controller
 				}
 			}
 
+            if(player.IsShielded)
+            {
+                if(gameTime.TotalGameTime - shieldOn > shieldTime)
+                {
+                    score -= 1;
+                }
+            }
+
 			// Make sure that the player does not go out of bounds
 			player.Position.X = MathHelper.Clamp(player.Position.X, 0, GraphicsDevice.Viewport.Width - player.Width);
             player.Position.Y = MathHelper.Clamp(player.Position.Y, 0, GraphicsDevice.Viewport.Height - player.Height);
@@ -360,82 +372,6 @@ namespace DerpyGame.Controller
 				score = 0;
 			}
 		}
-
-        //private void AddShield()
-        //{
-        //    Animation overshieldAnimation = new Animation();
-        //    Animation overshieldDeathAnimation = new Animation();
-        //    Animation overshieldGenAnimation = new Animation();
-
-        //    overshieldAnimation.Initialize(overshieldTexture, Vector2.Zero, 47, 61, 8, 30, Color.White, 1f, true);
-        //    overshieldDeathAnimation.Initialize(overshieldGenTexture, Vector2.Zero, 47, 61, 8, 30, Color.White, 1f, true);
-        //    overshieldGenAnimation.Initialize(overshieldDeathTexture, Vector2.Zero, 47, 61, 8, 30, Color.White, 1f, true);
-
-        //    Vector2 position = new Vector2(player.Position.X, player.Position.Y);
-
-        //    OverShield shield = new OverShield();
-        //    shield.Initialize(overshieldAnimation, position);
-
-        //    shields.Add(shield);
-        //}
-
-   //     private void UpdateShield()
-   //     {
-			//// Use the Keyboard / Dpad
-			//if (currentKeyboardState.IsKeyDown(Keys.Left) ||
-			//currentGamePadState.DPad.Left == ButtonState.Pressed)
-			//{
-			//	shield.Position.X -= playerMoveSpeed;
-			//}
-			//if (currentKeyboardState.IsKeyDown(Keys.Right) ||
-			//currentGamePadState.DPad.Right == ButtonState.Pressed)
-			//{
-			//	shield.Position.X += playerMoveSpeed;
-			//}
-			//if (currentKeyboardState.IsKeyDown(Keys.Up) ||
-			//currentGamePadState.DPad.Up == ButtonState.Pressed)
-			//{
-			//	shield.Position.Y -= playerMoveSpeed;
-			//}
-			//if (currentKeyboardState.IsKeyDown(Keys.Down) ||
-			//currentGamePadState.DPad.Down == ButtonState.Pressed)
-			//{
-			//	shield.Position.Y += playerMoveSpeed;
-			//}
-   //         if (currentKeyboardState.IsKeyDown(Keys.RightShift) ||
-			//currentGamePadState.DPad.Down == ButtonState.Pressed)
-			//{
-   //             if(isShielded)
-   //             {
-   //                 isShielded = false;
-   //             }
-   //             else if(!isShielded)
-   //             {
-   //                 isShielded = true;
-   //             }
-			//}
-
-			//// Make sure that the player does not go out of bounds
-			//shield.Position.X = MathHelper.Clamp(player.Position.X, 0, GraphicsDevice.Viewport.Width - player.Width);
-			//shield.Position.Y = MathHelper.Clamp(player.Position.Y, 0, GraphicsDevice.Viewport.Height - player.Height);
-
-   //         if(isShielded)
-   //         {
-			//	    Animation overshieldAnimation = new Animation();
-			//	    Animation overshieldDeathAnimation = new Animation();
-			//	    Animation overshieldGenAnimation = new Animation();
-
-			//	    overshieldAnimation.Initialize(overshieldTexture, Vector2.Zero, 47, 61, 8, 30, Color.White, 1f, true);
-			//	    overshieldDeathAnimation.Initialize(overshieldGenTexture, Vector2.Zero, 47, 61, 8, 30, Color.White, 1f, true);
-			//	    overshieldGenAnimation.Initialize(overshieldDeathTexture, Vector2.Zero, 47, 61, 8, 30, Color.White, 1f, true);
-
-			//	    Vector2 position = new Vector2(player.Position.X, player.Position.Y);
-
-			//	    shield.Initialize(overshieldAnimation, position);
-
-   //             shield.Draw(spriteBatch);
-			//}
-        //}
 
 		private void AddEnemy()
 		{
@@ -706,6 +642,29 @@ namespace DerpyGame.Controller
 					}
 				}
 			}
+
+   //         for (int i = 0; i < enemies.Count; i++)
+			//{
+			//	for (int j = 0; j < chickens.Count; j++)
+			//	{
+   //                 // Create the rectangles we need to determine if we collided with each other
+   //                 rectangleMine = new Rectangle((int)projectiles[i].Position.X -
+   //                 enemies[i].Width / 2, (int)enemies[i].Position.Y - enemies[i].Height / 2, enemies[i].Width, enemies[i].Height);
+
+			//		rectangleChicken = new Rectangle((int)chickens[j].Position.X - chickens[j].Width / 2,
+			//		(int)chickens[j].Position.Y - chickens[j].Height / 2,
+			//		chickens[j].Width, chickens[j].Height);
+
+			//		// Determine if the two objects collided with each other
+			//		if (rectangleMine.Intersects(rectangleChicken))
+			//		{
+   //                     chickens[j].Health -= enemies[i].Damage;
+   //                     enemies[i].Health = 0;
+
+
+			//		}
+			//	}
+			//}
 		}
 
 
